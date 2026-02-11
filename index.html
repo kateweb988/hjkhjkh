@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Интерактивный квиз</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: #fff;
+    padding: 40px;
+}
+
+.quiz {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.question {
+    margin-bottom: 30px;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: 0.6s ease;
+}
+
+.question.active {
+    opacity: 1;
+    max-height: 500px;
+}
+
+.question-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+    min-height: 28px;
+}
+
+.options label {
+    display: block;
+    background: #222;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.options label:hover {
+    background: #333;
+}
+
+.options input {
+    margin-right: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="quiz">
+
+    <div class="question active">
+        <div class="question-title" data-text="1. Какие услуги вам интересны?"></div>
+        <div class="options">
+            <label><input type="checkbox"> UX/UI дизайн</label>
+            <label><input type="checkbox"> Аудит продукта</label>
+            <label><input type="checkbox"> Разработка</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <div class="question-title" data-text="2. Какой у вас бюджет?"></div>
+        <div class="options">
+            <label><input type="checkbox"> До $1000</label>
+            <label><input type="checkbox"> $1000–5000</label>
+            <label><input type="checkbox"> $5000+</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <div class="question-title" data-text="3. Есть ли готовое ТЗ?"></div>
+        <div class="options">
+            <label><input type="checkbox"> Да</label>
+            <label><input type="checkbox"> Нет</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <div class="question-title" data-text="4. Какие сроки запуска?"></div>
+        <div class="options">
+            <label><input type="checkbox"> Срочно</label>
+            <label><input type="checkbox"> 1–2 месяца</label>
+            <label><input type="checkbox"> Пока изучаю</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <div class="question-title" data-text="5. Как с вами связаться?"></div>
+        <div class="options">
+            <label><input type="checkbox"> Telegram</label>
+            <label><input type="checkbox"> Email</label>
+            <label><input type="checkbox"> WhatsApp</label>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const questions = document.querySelectorAll('.question');
+
+function typeWriter(element, text, speed = 25) {
+    element.innerHTML = "";
+    let i = 0;
+    function typing() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        }
+    }
+    typing();
+}
+
+questions.forEach((question, index) => {
+
+    const title = question.querySelector('.question-title');
+    const text = title.dataset.text;
+
+    if (index === 0) {
+        typeWriter(title, text);
+    }
+
+    const inputs = question.querySelectorAll('input');
+
+    inputs.forEach(input => {
+        input.addEventListener('change', () => {
+
+            const nextQuestion = questions[index + 1];
+
+            if (nextQuestion && !nextQuestion.classList.contains('active')) {
+                nextQuestion.classList.add('active');
+
+                const nextTitle = nextQuestion.querySelector('.question-title');
+                const nextText = nextTitle.dataset.text;
+
+                typeWriter(nextTitle, nextText);
+
+                nextQuestion.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>
